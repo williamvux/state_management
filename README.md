@@ -4,6 +4,15 @@ TODO: Manage state without additional package
 
 <p>Manage state without using additional packages.</p>
 <p>Improve performance of application by reducing redundant rendering of other widgets.</p>
+<p>By using stream in flutter and InheritedWidget, This package only rebuild widgets registered and do not render whole large widgets, and It does not block the main isolate that causing UI lag, but update UI right after new state coming.</p>
+
+<p>We can get or use the newest state without register by using</p>
+
+```dart
+context.persist<CartProvider>().map;
+context.persist<CartProvider>().checkAll(false | true);
+context.persist<CartProvider>().checkCart(key, false | true)
+```
 
 ## Usage
 
@@ -12,7 +21,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  state_management:
+  carousel_pro:
     git:
       url: https://github.com/williamvux/state_management.git
       ref: main
@@ -22,7 +31,7 @@ dependencies:
 //Create provider for state
 import 'package:state_management/state_management.dart';
 
-final class CartProvider extends StateBloc {
+ final class CartProvider extends StateBloc {
   final Map<String, bool> map;
 
   CartProvider({required this.map});
@@ -139,8 +148,59 @@ final class CartHeader extends StatelessWidget {
 }
 ```
 
+```dart
+
+//Register builder for state
+final class ListCartItems extends StatelessWidget {
+  const ListCartItems({super.key, required this.label, required this.rooms, required this.mapRoom});
+
+  final LanguageLabel label;
+  final List<RoomRateInfo> rooms;
+  final Map<String, InfoCartHotel> mapRoom;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      shrinkWrap: true,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+      itemCount: rooms.length,
+      separatorBuilder: (_, index) => const SizedBox(height: 10),
+      itemBuilder: (_, index) {
+        final room = rooms[index];
+        return Container(
+          key: Key(room.createdAt),
+          padding: const EdgeInsets.only(right: 10, bottom: 10),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              StateBuilder<CartProvider>(
+                builder: (_, state) {
+                  return Checkbox.adaptive(
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    activeColor: AppConstants.accent,
+                    value: state.map[room.createdAt],
+                    onChanged: (bool? value) {
+                      state.checkCart(room.createdAt, value ?? false);
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+```
+
 ## Result
 
-<div style="width: 1000px">
-  <img src="assets/result.gif">
+<div style="width: 150px">
+<img src="assets/result.gif">
 </div>
