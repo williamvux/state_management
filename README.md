@@ -12,7 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  carousel_pro:
+  state_management:
     git:
       url: https://github.com/williamvux/state_management.git
       ref: main
