@@ -1,9 +1,9 @@
 TODO: Manage state without additional package
 
 ## Features
+
 <p>Manage state without using additional packages.</p>
 <p>Improve performance of application by reducing redundant rendering of other widgets.</p>
-
 
 ## Usage
 
@@ -39,6 +39,7 @@ final class CartProvider extends StateBloc {
 }
 
 ```
+
 ```dart
 
 //Create state provider that map data
@@ -140,6 +141,6 @@ final class CartHeader extends StatelessWidget {
 
 ## Result
 
-<div style="width: 150px">
-<img src="assets/result.gif">
+<div style="width: 1000px">
+  <img src="assets/result.gif">
 </div>
